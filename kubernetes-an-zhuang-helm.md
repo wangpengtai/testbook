@@ -6,7 +6,7 @@
 >
 > helm使用需要kubectl，点击了解安装和配置[kubectl](https://www.cnrancher.com/docs/rancher/v2.x/cn/install-prepare/kubectl/ "kubectl")
 
-Helm是Kubernetes首选的包管理工具。Helm\`charts\`为Kubernetes YAML清单文档提供模板语法。使用Helm，我们可以创建可配置的部署，而不仅仅是使用静态文件。有关创建自己的\`charts\`的更多信息，请查看[https://helm.sh/](https://helm.sh/)文档。Helm有两个部分：Helm客户端\(helm\)和Helm服务端\(Tiller\)。
+Helm是Kubernetes首选的包管理工具。Helm`charts`为Kubernetes YAML清单文档提供模板语法。使用Helm，我们可以创建可配置的部署，而不仅仅是使用静态文件。有关创建自己的`charts`的更多信息，请查看[https://helm.sh/](https://helm.sh/)文档。Helm有两个部分：Helm客户端\(helm\)和Helm服务端\(Tiller\)。
 
 ### 1. 配置Helm客户端访问权限
 
