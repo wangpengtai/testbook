@@ -72,7 +72,7 @@ helm fetch stable/prometheus
 修改prometheus下面的values.yaml里面的值
 
 ```
-altermanager:
+alertmanager:
   ingress:
     enabled: true
     hosts: [alertmanager.domain.com]
