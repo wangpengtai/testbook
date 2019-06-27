@@ -55,8 +55,10 @@ Helm的服务器端部分Tiller,通常运行在Kubernetes集群内部。但是�
 ```
 注意:
 1、RKE默认启用RBAC,所以在安装tiller时需要指定ServiceAccount。
-2、helm init在缺省配置下，会去谷歌镜像仓库拉取gcr.io/kubernetes-helm/tiller镜像，在Kubernetes集群上安装配置Tiller；由于在国内可能无法访问gcr.io、storage.googleapis.com等域名，可以通过--tiller-image指定私有镜像仓库镜像。 
-3、helm init在缺省配置下，会利用https://kubernetes-charts.storage.googleapis.com作为缺省的stable repository地址,并去更新相关索引文件。在国内可能无法访问storage.googleapis.com地址, 可以通过--stable-repo-url指定chart国内加速镜像地址。 
+2、helm init在缺省配置下，会去谷歌镜像仓库拉取gcr.io/kubernetes-helm/tiller镜像，在Kubernetes集群上安装配置Tiller；
+由于在国内可能无法访问gcr.io、storage.googleapis.com等域名，可以通过--tiller-image指定私有镜像仓库镜像。 
+3、helm init在缺省配置下，会利用https://kubernetes-charts.storage.googleapis.com作为缺省的stable repository地址,
+并去更新相关索引文件。在国内可能无法访问storage.googleapis.com地址, 可以通过--stable-repo-url指定chart国内加速镜像地址。 
 4、如果您是离线安装Tiller, 假如没有内部的chart仓库, 可通过添加--skip-refresh参数禁止Tiller更新索引。
 ```
 
