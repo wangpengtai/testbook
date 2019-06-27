@@ -66,7 +66,7 @@ Helm的服务器端部分Tiller,通常运行在Kubernetes集群内部。但是�
 
 ```shell
 wangpeng@test-kube-master-01:~$ helm init --service-account tiller --skip-refresh \
-> --tiller-image registry.cn-shanghai.aliyuncs.com/rancher/tiller:v2.14.1
+--tiller-image registry.cn-shanghai.aliyuncs.com/rancher/tiller:v2.14.1
 Creating /home/wangpeng/.helm 
 Creating /home/wangpeng/.helm/repository 
 Creating /home/wangpeng/.helm/repository/cache 
