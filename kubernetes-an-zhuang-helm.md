@@ -27,16 +27,14 @@ kubectl create clusterrolebinding tiller \
 
 ### 2. 安装Helm客户端
 
-采用二进制安装
-
-可以在`helm`官网上下载[Helm](https://github.com/helm/helm/releases),如果速度不理想可以使用rancher自带加速下载[Helm](https://www.cnrancher.com/docs/rancher/v2.x/cn/install-prepare/download/helm/)
+这里采用二进制安装，可以在`helm`官网上下载[Helm](https://github.com/helm/helm/releases),如果速度不理想可以使用rancher自带加速下载[Helm](https://www.cnrancher.com/docs/rancher/v2.x/cn/install-prepare/download/helm/)。
 
 ```shell
 wget https://www.cnrancher.com/download/helm/helm-v2.14.1-linux-amd64.tar.gz
 tar xf helm-v2.14.1-linux-amd64.tar.gz
 ```
 
-`helm`在解压后的目录中找到二进制文件，并将其移动到所需的位置
+`helm`在解压后的目录中找到二进制文件，并将其移动到所需的位置。
 
 ```shell
 sudo mv linux-amd64/helm /usr/local/bin/helm && chmod +x /usr/local/bin/helm
