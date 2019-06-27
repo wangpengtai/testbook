@@ -2,5 +2,6 @@
 
 * [Introduction](README.md)
 * [First Chapter](chapter1.md)
-* [kubernetes 安装 helm](kubernetes-an-zhuang-helm.md)
+* [kubernetes安装Helm](kubernetes-an-zhuang-helm.md)
+* Helm安装prometheus
 
