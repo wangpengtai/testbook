@@ -12,7 +12,7 @@ Helm是Kubernetes首选的包管理工具。Helm`charts`为Kubernetes YAML清单
 
 Helm在集群上安装`tiller`服务以管理`charts`. 由于RKE默认启用RBAC, 因此我们需要使用`kubectl`来创建一个`serviceaccount`，`clusterrolebinding`才能让`tiller`具有部署到集群的权限。
 
-* 在`kube-system`命名空间中创建`ServiceAccount`；
+* 在`kube-system`命名空间中创建`ServiceAccount`
 
 * 创建`ClusterRoleBinding`以授予`tiller`帐户对集群的访问权限
 
