@@ -65,7 +65,7 @@ Helm的服务器端部分Tiller,通常运行在Kubernetes集群内部。但是�
 在rancher中安装Tiller
 
 ```shell
-wangpeng@test-kube-master-01:~$ helm init --service-account tiller --skip-refresh \
+helm init --service-account tiller --skip-refresh \
 --tiller-image registry.cn-shanghai.aliyuncs.com/rancher/tiller:v2.14.1
 Creating /home/wangpeng/.helm 
 Creating /home/wangpeng/.helm/repository 
@@ -89,7 +89,7 @@ For more information on securing your installation see: https://docs.helm.sh/usi
 查看`helm`情况
 
 ```shell
-wangpeng@test-kube-master-01:~$ helm version
+helm version
 Client: &version.Version{SemVer:"v2.14.1", GitCommit:"5270352a09c7e8b6e8c9593002a73535276507c0", GitTreeState:"clean"}
 Server: &version.Version{SemVer:"v2.14.1", GitCommit:"5270352a09c7e8b6e8c9593002a73535276507c0", GitTreeState:"clean"}
 ```
@@ -129,6 +129,7 @@ NAME            URL
 stable          https://kubernetes-charts.storage.googleapis.com 
 local           http://127.0.0.1:8879/charts                     
 rancher-stable  https://releases.rancher.com/server-charts/stable
+azure-stable    http://mirror.azure.cn/kubernetes/charts/  
 ```
 
 `helm`在`kubernetes`中安装完成。
