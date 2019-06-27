@@ -133,5 +133,5 @@ local           http://127.0.0.1:8879/charts
 rancher-stable  https://releases.rancher.com/server-charts/stable
 ```
 
-
+`helm`在`kubernetes`中安装完成
 
