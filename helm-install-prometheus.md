@@ -76,7 +76,6 @@ altermanager:
   ingress:
     enabled: true
     hosts: [alertmanager.domain.com]
-    annotations: {kubernetes.io/ingress.class: traefik,traefik.frontend.rule.type: PathPrefixStrip}
   persistentVolume:
     enabled: true
 ---  
@@ -84,7 +83,6 @@ server:
   ingress:
     enabled: true
     hosts: [prometheus.domain.com]
-    annotations: {kubernetes.io/ingress.class: traefik,traefik.frontend.rule.type: PathPrefixStrip}
   persistentVolume:
     enabled: true
 ---
@@ -92,10 +90,8 @@ pushgateway:
   ingress:
     enabled: true
     hosts: [pushgateway.domain.com]
-    annotations: {kubernetes.io/ingress.class: traefik,traefik.frontend.rule.type: PathPrefixStrip}
-```
-
 修改完毕values.yaml保存后，使用helm安装prometheus
+```
 
 ```
  helm install --namespace minitor --name prometheus ./prometheus
