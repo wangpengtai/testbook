@@ -69,7 +69,7 @@ kubectl create -f pv2.yaml
 helm fetch stable/prometheus
 ```
 
-修改`prometheus`下面的`values.yaml`里面的值
+修改prometheus下面的values.yaml里面的值
 
 ```
 altermanager:
@@ -95,7 +95,7 @@ pushgateway:
     annotations: {kubernetes.io/ingress.class: traefik,traefik.frontend.rule.type: PathPrefixStrip}
 ```
 
-修改完毕`values.yaml`保存后，使用`helm`安装`prometheus`
+修改完毕values.yaml保存后，使用helm安装prometheus
 
 ```
  helm install --namespace minitor --name prometheus ./prometheus
@@ -128,5 +128,5 @@ helm install --namespace monitor --name grafana ./grafana
 
 ### 5. 导入grafana模板
 
-选取“+”图标，import进去kubernetes-tool/monitor/dashboard下的面板json文件，或者直接import一个  https://grafana.com上的模版，即可看到监控面板的情况（有的有一些问题，需要自行试验、选择）。也可以自己设计面板、然后保存起来，或者分享给别人使用。
+选取“+”图标，import进去kubernetes-tool/monitor/dashboard下的面板json文件，或者直接import一个 [https://grafana.com ](https://grafana.com上的模版，即可看到监控面板的情况（有的有一些问题，需要自行试验、选择）。也可以自己设计面板、然后保存起来，或者分享给别人使用。)上的模版，即可看到监控面板的情况（有的有一些问题，需要自行试验、选择）。也可以自己设计面板、然后保存起来，或者分享给别人使用。
 
