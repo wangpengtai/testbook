@@ -1,0 +1,9 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name:  php-apache
+spec:
+  selector:
+    app:  php-apache
+  ports:
+  - port:  80

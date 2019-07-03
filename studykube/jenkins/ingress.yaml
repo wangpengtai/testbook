@@ -1,0 +1,15 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: jenkins-lb
+  namespace: kube-ops
+spec:
+  tls:
+    - secretName: tls-jenkins-ingress
+  rules:
+  - host: jenkins.mytest.io
+    http:
+      paths:
+      -  backend:
+          serviceName: jenkins
+          servicePort: 8080
