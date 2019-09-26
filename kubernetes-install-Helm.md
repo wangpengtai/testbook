@@ -18,7 +18,7 @@ Helm在集群上安装`tiller`服务以管理`charts`. 由于RKE默认启用RBAC
 kubectl -n kube-system create serviceaccount tiller
 
 kubectl create clusterrolebinding tiller \
---clusterrole cluster-admin --serviceaccount=kube-system:tille
+--clusterrole cluster-admin --serviceaccount=kube-system:tiller
 ```
 
 ### 2. 安装Helm客户端
