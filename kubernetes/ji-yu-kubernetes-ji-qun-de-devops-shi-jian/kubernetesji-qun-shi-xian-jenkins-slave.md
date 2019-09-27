@@ -1,6 +1,6 @@
+# kubernetes集群实现jenkins-slave
+
 ## 一、安装Jenkins
-
-
 
 我们将使用[Jenkins的`kubernetes`插件](https://github.com/jenkinsci/kubernetes-plugin)通过配置动态代理来适应当前的工作负载，从而在集群上扩展Jenkins。
 
@@ -18,7 +18,7 @@
 
 IP：172.18.1.13
 
-```
+```text
 apt install nfs-common nfs-kernel-server -y
 
 #配置挂载信息
@@ -41,7 +41,7 @@ systemctl enable nfs-kernel-server
 
 ### 2. kubernetes集群安装Jenkins
 
-```shell
+```text
 #该目录下是jenkins.mytest.io为测试域名的自签密钥
 ls jenkins.mytest.io/
 cacerts.pem  cacerts.srl  cakey.pem  create_self-signed-cert.sh  jenkins.mytest.io.crt  jenkins.mytest.io.csr  jenkins.mytest.io.key  openssl.cnf  tls.crt  tls.key
@@ -252,71 +252,58 @@ spec:
 
 创建Jenkins
 
-```shell
+```text
 kubectl create -f pvc.yaml
 kubectl create -f rbac.yaml
 kubectl create -f jenkins.yaml
 ```
 
----
-
 ## 二、jenkins配置
 
 在/etc/hosts配置域名解析
 
-```
+```text
 kube-ip jenkins.mytest.io
 ```
 
 ### 1. 初始化配置
 
-打开[https://jenkins.mytes.io](https://jenkins.mytes.io)![](https://github.com/wangpengtai/testbook/blob/master/images/kubernetes install jenkins slave/images/jenkins01.png?raw=true)
+打开[https://jenkins.mytes.io](https://jenkins.mytes.io)![](https://github.com/wangpengtai/testbook/blob/master/images/kubernetes%20install%20jenkins%20slave/images/jenkins01.png?raw=true)
 
 安装插件，选择默认即可
 
-![](https://github.com/wangpengtai/testbook/blob/master/images/kubernetes install jenkins slave/images/jenkins02.png?raw=true)
+![](https://github.com/wangpengtai/testbook/blob/master/images/kubernetes%20install%20jenkins%20slave/images/jenkins02.png?raw=true)
 
 ### 2. 插件配置
 
 采用Jenkins里面的kubernetes插件，让Jenkins可以调用kubernetes生成Jenkins-slave
 
-![](https://github.com/wangpengtai/testbook/blob/master/images/kubernetes install jenkins slave/images/jenkins03.png?raw=true)
+![](https://github.com/wangpengtai/testbook/blob/master/images/kubernetes%20install%20jenkins%20slave/images/jenkins03.png?raw=true)
 
 #### 2.1  安装kubernetes插件
 
-Manage Jenkins -&gt; Manage Plugins -&gt; Available -&gt; Kubernetes plugin 勾选安装即可。![](https://github.com/wangpengtai/testbook/blob/master/images/kubernetes install jenkins slave/images/jenkins04.png?raw=true)
-
----
+Manage Jenkins -&gt; Manage Plugins -&gt; Available -&gt; Kubernetes plugin 勾选安装即可。![](https://github.com/wangpengtai/testbook/blob/master/images/kubernetes%20install%20jenkins%20slave/images/jenkins04.png?raw=true)
 
 #### 2.2 配置kubernetes插件功能
 
 * Manage Jenkins —&gt; Configure System —&gt; \(拖到最下方\)Add a new cloud —&gt; 选择 Kubernetes，然后填写 Kubernetes 和 Jenkins 配置信息。
-
 * kubernetes地址采用了kube的服务器发现[https://kubernetes.default.svc.cluster.local](https://kubernetes.default.svc.cluster.local)
-
 * namespace填kube-ops，然后点击Test Connection，如果出现 Connection test successful 的提示信息证明 Jenkins 已经可以和 Kubernetes 系统正常通信
-
 * Jenkins URL 地址：[http://jenkins.kube-ops.svc.cluster.local:8080](http://jenkins.kube-ops.svc.cluster.local:8080)
 
-![](https://github.com/wangpengtai/testbook/blob/master/images/kubernetes install jenkins slave/images/jenkins05.png?raw=true)![](https://github.com/wangpengtai/testbook/blob/master/images/kubernetes install jenkins slave/images/jenkins06.png?raw=true)
+![](https://github.com/wangpengtai/testbook/blob/master/images/kubernetes%20install%20jenkins%20slave/images/jenkins05.png?raw=true)![](https://github.com/wangpengtai/testbook/blob/master/images/kubernetes%20install%20jenkins%20slave/images/jenkins06.png?raw=true)
 
 另外需要注意，如果这里 Test Connection 失败的话，很有可能是权限问题，这里就需要把我们创建的 jenkins 的 serviceAccount 对应的 secret 添加到这里的 Credentials 里面。
 
----
-
 #### 2.3 配置 kubernetes Pod Template
 
-其实就是配置 Jenkins Slave 运行的 Pod 模板，命名空间我们同样是用 kube-ops，Labels 这里也非常重要，对于后面执行 Job 的时候需要用到该值，然后我们这里使用的是 cnych/jenkins:jnlp 这个镜像，这个镜像是在官方的 jnlp 镜像基础上定制的，加入了 kubectl 等一些实用的工具。![](https://github.com/wangpengtai/testbook/blob/master/images/kubernetes install jenkins slave/images/jenkins07.png?raw=true)
-
----
+其实就是配置 Jenkins Slave 运行的 Pod 模板，命名空间我们同样是用 kube-ops，Labels 这里也非常重要，对于后面执行 Job 的时候需要用到该值，然后我们这里使用的是 cnych/jenkins:jnlp 这个镜像，这个镜像是在官方的 jnlp 镜像基础上定制的，加入了 kubectl 等一些实用的工具。![](https://github.com/wangpengtai/testbook/blob/master/images/kubernetes%20install%20jenkins%20slave/images/jenkins07.png?raw=true)
 
 #### 2.4 添加容器的挂载卷
 
 另外需要注意我们这里需要在下面挂载两个主机目录，一个是 /var/run/docker.sock，该文件是用于 Pod 中的容器能够共享宿主机的 Docker，这就是大家说的 docker in docker 的方式，Docker 二进制文件我们已经打包到上面的镜像中了，另外一个目录下 /root/.kube 目录，我们将这个目录挂载到容器的 /home/jenkins/.kube 目录下面这是为了让我们能够在 Pod 的容器中能够使用 kubectl 工具来访问我们的 Kubernetes 集群，方便我们后面在 Slave Pod 部署 Kubernetes 应用。
 
-![](https://github.com/wangpengtai/testbook/blob/master/images/kubernetes install jenkins slave/images/jenkins08.png?raw=true)
-
----
+![](https://github.com/wangpengtai/testbook/blob/master/images/kubernetes%20install%20jenkins%20slave/images/jenkins08.png?raw=true)
 
 #### 2.5 添加账号
 
@@ -324,23 +311,21 @@ Manage Jenkins -&gt; Manage Plugins -&gt; Available -&gt; Kubernetes plugin 勾�
 
 测试的时候不添加账号会告知没有权限
 
-![](https://github.com/wangpengtai/testbook/blob/master/images/kubernetes install jenkins slave/images/jenkins10.png?raw=true)
+![](https://github.com/wangpengtai/testbook/blob/master/images/kubernetes%20install%20jenkins%20slave/images/jenkins10.png?raw=true)
 
 在容器模板高级里面添加kubernetes集群中创建的jenkins账号
 
-![](https://github.com/wangpengtai/testbook/blob/master/images/kubernetes install jenkins slave/images/jenkins09.png?raw=true)
-
----
+![](https://github.com/wangpengtai/testbook/blob/master/images/kubernetes%20install%20jenkins%20slave/images/jenkins09.png?raw=true)
 
 ## 三、测试
 
 创建一个测试任务
 
-![](https://github.com/wangpengtai/testbook/blob/master/images/kubernetes install jenkins slave/images/jenkins11.png?raw=true)
+![](https://github.com/wangpengtai/testbook/blob/master/images/kubernetes%20install%20jenkins%20slave/images/jenkins11.png?raw=true)
 
-在pipeline的框里面添加一下内容![](https://github.com/wangpengtai/testbook/blob/master/images/kubernetes install jenkins slave/images/jenkins12.png?raw=true)
+在pipeline的框里面添加一下内容![](https://github.com/wangpengtai/testbook/blob/master/images/kubernetes%20install%20jenkins%20slave/images/jenkins12.png?raw=true)
 
-```js
+```javascript
 def label = "jnlp-slave"
 podTemplate(inheritFrom: 'jnlp-slave', instanceCap: 0, label: 'jnlp-slave', name: '', namespace: 'kube-ops', nodeSelector: '', podRetention: always(), serviceAccount: '', workspaceVolume: emptyDirWorkspaceVolume(false), yaml: '') {
     node(label) {
@@ -354,11 +339,11 @@ podTemplate(inheritFrom: 'jnlp-slave', instanceCap: 0, label: 'jnlp-slave', name
 }
 ```
 
-开始构建任务![](https://github.com/wangpengtai/testbook/blob/master/images/kubernetes install jenkins slave/images/jenkins13.png?raw=true)
+开始构建任务![](https://github.com/wangpengtai/testbook/blob/master/images/kubernetes%20install%20jenkins%20slave/images/jenkins13.png?raw=true)
 
 构建任务输出
 
-```
+```text
 Started by user admin
 Running in Durability level: MAX_SURVIVABILITY
 [Pipeline] Start of Pipeline
@@ -446,15 +431,11 @@ jnlp-slave-tbdnl          2/2       Running   0          15s
 Finished: SUCCESS
 ```
 
----
-
 ## 结束语
 
 根据上面步骤（大部分都是根据阳明博客上的《基于 Jenkins 的 CI/CD\(一\)》思路跟进），但是由于环境和自己认知问题，会出现各种出错，憋了一天，没什么进展。
 
 后来只能根据`kubectl -n kube-ops logs -f jenkins-xxxxx`的命令一点点查出来的，搜过很多帖子大概思路一致，但是无法解决本质问题，如果跑不起来，再高端也是个没有用，后来根据kubernetes-plugin的github，具体读了遍结合自己报的错一点一点调整过来，总算搞出来了。
-
----
 
 **具体参考了以下几遍优秀的文章:**
 

@@ -1,4 +1,4 @@
-
+# kubernetes集群下安装nfs服务器
 
 找一台服务器搭建一台nfs服务器
 
@@ -6,7 +6,7 @@
 
 IP：172.18.1.13
 
-```
+```text
 apt install nfs-common nfs-kernel-server -y
 
 #配置挂载信息
@@ -19,6 +19,4 @@ chmod -R 777 /data/k8s
 #开机启动
 systemctl enable nfs-kernel-server
 ```
-
-
 

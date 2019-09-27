@@ -1,12 +1,14 @@
-https://github.com/kubernetes-incubator/external-storage/tree/master/nfs-client
+# kubernetes集群使用nfs-client实现storageclass
+
+[https://github.com/kubernetes-incubator/external-storage/tree/master/nfs-client](https://github.com/kubernetes-incubator/external-storage/tree/master/nfs-client)
 
 nfs服务器见此篇
 
-\[kubernetes集群下安装nfs服务器\]\(https://blog.51cto.com/wangpengtai/2418576\)
+\[kubernetes集群下安装nfs服务器\]\([https://blog.51cto.com/wangpengtai/2418576\](https://blog.51cto.com/wangpengtai/2418576\)\)
 
 ## 一、helm安装
 
-```
+```text
 helm install stable/nfs-client-provisioner --set nfs.server=172.18.1.3 --set nfs.path=/data/k8s
 ```
 
@@ -75,7 +77,7 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 ```
 
-```
+```text
 kubectl create -f rbac.yaml
 ```
 
@@ -122,7 +124,7 @@ spec:
             path: /data/k8s
 ```
 
-```
+```text
 kubectl create -f nfs-client-deployment.yaml
 ```
 
@@ -140,7 +142,7 @@ parameters:
   archiveOnDelete: "false" # When set to "false" your PVs will not be archived
 ```
 
-```
+```text
 kubectl create -f nfs-client-sc.yaml
 ```
 
@@ -192,6 +194,4 @@ spec:
       persistentVolumeClaim:
         claimName: test-claim
 ```
-
-
 

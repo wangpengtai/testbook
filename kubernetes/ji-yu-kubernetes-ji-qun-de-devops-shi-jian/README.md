@@ -1,19 +1,21 @@
-> ### **GitHub:**[**Helm Chart for Harbor**](https://github.com/goharbor/harbor-helm)
+# 基于kubernetes集群的devops实践
 
-### 1. 添加harbor的helm库
+> ## **GitHub:**[**Helm Chart for Harbor**](https://github.com/goharbor/harbor-helm)
 
-```shell
+## 1. 添加harbor的helm库
+
+```text
 helm repo add harbor https://helm.goharbor.io
 ```
 
-### 2. 将harbor下载到本地
+## 2. 将harbor下载到本地
 
-```shell
+```text
 helm fetch harbor/harbor
 tar xf harbor-1.1.1.tgz
 ```
 
-### 3. 自定义配置
+## 3. 自定义配置
 
 默认的values.yaml基本不需要多大改动，只有极个别的需要自定义修改
 
@@ -48,7 +50,7 @@ persistence:
       storageClass: "harbor-data"
 ```
 
-### 4. 创建一个harbor的存储类
+## 4. 创建一个harbor的存储类
 
 存储类见[《kubernetes集群使用nfs-client实现storageclass》](https://blog.51cto.com/wangpengtai/2418609)
 
@@ -62,26 +64,26 @@ metadata:
 provisioner: fuseim.pri/ifs
 ```
 
-### 5. 创建harbor
+## 5. 创建harbor
 
-```shell
+```text
 kubectl create -f harbor-data-sc.yaml
 helm install --name harbor -f new-values.yaml --namespace kube-ops ./harbor
 ```
 
-### 6. 查看ingress
+## 6. 查看ingress
 
-```shell
+```text
 kubectl get ingresses. -n kube-ops
 NAME                    HOSTS                               ADDRESS                                                                                                 PORTS     AGE
 harbor-harbor-ingress   harbor.mytest.io,notary.mytest.io   172.18.1.14,.....,172.18.1.9   80, 443   101m
 ```
 
-### 7. 本地访问
+## 7. 本地访问
 
 配置本地/etc/hosts文件
 
-```
+```text
 kube-ip harbor.mytest.io
 ```
 
@@ -90,6 +92,4 @@ kube-ip harbor.mytest.io
 账号：`admin`
 
 密码：`Harbor12345`
-
-
 

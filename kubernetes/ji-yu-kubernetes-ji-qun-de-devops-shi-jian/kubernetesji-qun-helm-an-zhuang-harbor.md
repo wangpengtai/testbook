@@ -1,19 +1,21 @@
-### **GitHub:**[**Helm Chart for Harbor**](https://github.com/goharbor/harbor-helm)
+# kubernetes集群helm安装harbor
 
-### 1. 添加harbor的helm库
+## **GitHub:**[**Helm Chart for Harbor**](https://github.com/goharbor/harbor-helm)
 
-```shell
+## 1. 添加harbor的helm库
+
+```text
 helm repo add harbor https://helm.goharbor.io
 ```
 
-### 2. 将harbor下载到本地
+## 2. 将harbor下载到本地
 
-```shell
+```text
 helm fetch harbor/harbor
 tar xf harbor-1.1.1.tgz
 ```
 
-### 3. 自定义配置
+## 3. 自定义配置
 
 默认的values.yaml基本不需要多大改动，只有极个别的需要自定义修改
 
@@ -48,7 +50,7 @@ persistence:
       storageClass: "harbor-data"
 ```
 
-### 4. 创建一个harbor的存储类
+## 4. 创建一个harbor的存储类
 
 存储类见[《kubernetes集群使用nfs-client实现storageclass》](https://blog.51cto.com/wangpengtai/2418609)
 
@@ -62,26 +64,26 @@ metadata:
 provisioner: fuseim.pri/ifs
 ```
 
-### 5. 创建harbor
+## 5. 创建harbor
 
-```shell
+```text
 kubectl create -f harbor-data-sc.yaml
 helm install --name harbor -f new-values.yaml --namespace kube-ops ./harbor
 ```
 
-### 6. 查看ingress
+## 6. 查看ingress
 
-```shell
+```text
 kubectl get ingresses. -n kube-ops
 NAME                    HOSTS                               ADDRESS                                                                                                 PORTS     AGE
 harbor-harbor-ingress   harbor.mytest.io,notary.mytest.io   172.18.1.14,.....,172.18.1.9   80, 443   101m
 ```
 
-### 7. 本地访问
+## 7. 本地访问
 
 配置本地/etc/hosts文件
 
-```
+```text
 kube-ip harbor.mytest.io
 ```
 
@@ -91,11 +93,11 @@ kube-ip harbor.mytest.io
 
 密码：`Harbor12345`
 
-### 8. docker本地访问配置
+## 8. docker本地访问配置
 
 使用 docker cli 来进行 pull/push 镜像，由于上面我们安装的时候通过 Ingress 来暴露的 Harbor 的服务，而且强制使用了 https，所以如果我们要在终端中使用我们这里的私有仓库的话，就需要配置上相应的证书：
 
-```
+```text
 docker login harbor.mytest.io
 Username: admin
 Password: 
@@ -129,7 +131,7 @@ type: kubernetes.io/tls
 
 其中 data 区域中 ca.crt 对应的值就是我们需要证书，不过需要注意还需要做一个 base64 的解码，这样证书配置上以后就可以正常访问了。
 
-```shell
+```text
 kubectl get secret harbor-harbor-ingress -n kube-ops -o jsonpath="{.data.ca\.crt}"|base64 --decode
 
 -----BEGIN CERTIFICATE-----
@@ -154,13 +156,13 @@ PJ0pgCZTF0cxXP3d7mI2Lld53z+J6ojqtvg/oyaLzM3m1Af0bC0Kaw==
 
 手动创建docker下面的harbor专用的证书文件夹
 
-```
+```text
 sudo mkdir -pv /etc/docker/certs.d/harbor.mytest.io
 ```
 
 将上面生成的密钥写入到文件夹里面的ca.crt中
 
-```
+```text
 sudo -i
 cat >> /etc/docker/certs.d/harbor.mytest.io/ca.crt<< EOF
 -----BEGIN CERTIFICATE-----
@@ -186,15 +188,15 @@ EOF
 
 重启docker
 
-```
+```text
 systemctl restart docker
 ```
 
-### 9. docker login登录
+## 9. docker login登录
 
 使用docker-cli登录测试`harbor.mytest.io`
 
-```
+```text
 docker login harbor.mytest.io
 Username: admin
 Password: 
@@ -205,11 +207,11 @@ https://docs.docker.com/engine/reference/commandline/login/#credentials-store
 Login Succeeded
 ```
 
-### 10. 上传个镜像试试
+## 10. 上传个镜像试试
 
 拉取个busybox镜像到本地
 
-```
+```text
 docker pull busybox
 Using default tag: latest
 latest: Pulling from library/busybox
@@ -220,13 +222,13 @@ Status: Downloaded newer image for busybox:latest
 
 将busybox的tags修改成`harbor.mytest.io/library/busybox:latest`，`library`是harbor默认的库
 
-```
+```text
 docker tag busybox:latest harbor.mytest.io/library/busybox:latest
 ```
 
 使用docker push将修改tag后的镜像推送到harbor
 
-```
+```text
 docker push harbor.mytest.io/library/busybox:latest
 The push refers to repository [harbor.mytest.io/library/busybox]
 6194458b07fc: Pushed 
@@ -237,13 +239,11 @@ latest: digest: sha256:bf510723d2cd2d4e3f5ce7e93bf1e52c8fd76831995ac3bd3f90ecc86
 
 ![](https://note.youdao.com/yws/api/personal/file/WEB84756f145541cc8378afeca4997be935?method=download&shareKey=173eca77c444e7d382f3d2e2f46a18a6)
 
-### 11. 注意
+## 11. 注意
 
 在结合jenkins使用cicd过程中需要注意：
 
 1. 每台node节点需要配置dns解析，否则docker无法访问
-
 2. 需要将刚才上述的密钥推送到全部node节点上，不然会报错，cicd构建过程会失败
-
 3. 可以在pipeline的过程中制定nodeselector，定义其中一台node专门运行jenkins，这台node节点需要打上labels，jenkins通过nodeseletor=labels，可以在一台服务器上报错images了
 
